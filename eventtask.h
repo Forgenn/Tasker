@@ -2,6 +2,7 @@
 #define EVENTTASK_H
 
 #include <QDialog>
+#include "mainwindow.h"
 
 namespace Ui {
 class eventTask;
@@ -16,7 +17,9 @@ public:
     ~eventTask();
 
 private slots:
-    void on_lineEdit_returnPressed();
+    void on_lineEdit_returnPressed();    
+    void on_toolButton_clicked();
+    void addTask(QListWidget* Window);
 
 private:
     Ui::eventTask *ui;

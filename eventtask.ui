@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>296</width>
     <height>300</height>
    </rect>
   </property>
@@ -16,31 +16,71 @@
   <widget class="QLineEdit" name="lineEdit">
    <property name="geometry">
     <rect>
-     <x>150</x>
-     <y>100</y>
-     <width>113</width>
+     <x>10</x>
+     <y>30</y>
+     <width>291</width>
      <height>21</height>
     </rect>
    </property>
-  </widget>
-  <widget class="QDateTimeEdit" name="dateTimeEdit">
-   <property name="geometry">
-    <rect>
-     <x>90</x>
-     <y>190</y>
-     <width>194</width>
-     <height>22</height>
-    </rect>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>315</width>
+     <height>500</height>
+    </size>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: white;</string>
+   </property>
+   <property name="inputMask">
+    <string/>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="frame">
+    <bool>false</bool>
+   </property>
+   <property name="placeholderText">
+    <string>New Task</string>
    </property>
   </widget>
   <widget class="QCalendarWidget" name="calendarWidget">
    <property name="geometry">
     <rect>
-     <x>80</x>
+     <x>10</x>
      <y>120</y>
      <width>280</width>
-     <height>156</height>
+     <height>171</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">alternate-background-color: rgb(128, 128, 128);
+  </string>
+   </property>
+  </widget>
+  <widget class="QToolButton" name="toolButton">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>100</y>
+     <width>26</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Calendar</string>
+   </property>
+   <property name="popupMode">
+    <enum>QToolButton::InstantPopup</enum>
+   </property>
+   <property name="arrowType">
+    <enum>Qt::DownArrow</enum>
    </property>
   </widget>
  </widget>
