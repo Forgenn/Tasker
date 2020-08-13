@@ -7,6 +7,11 @@ eventTask::eventTask(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->calendarWidget->hide();
+
+    if(!this->isHidden())
+        this->show();
+    fadeIn();
+
 }
 
 eventTask::~eventTask()
@@ -31,12 +36,52 @@ void eventTask::on_toolButton_clicked()
     }
 }
 
+void eventTask::fadeIn(){
+    QGraphicsOpacityEffect *eff = new QGraphicsOpacityEffect(this);
+    setGraphicsEffect(eff);
+    QPropertyAnimation *a = new QPropertyAnimation(eff,"opacity");
+    a->setDuration(350);
+    a->setStartValue(0);
+    a->setEndValue(1);
+    a->setEasingCurve(QEasingCurve::InBack);
+    a->start(QPropertyAnimation::DeleteWhenStopped);
+}
+
+void eventTask::fadeOut(){
+    QGraphicsOpacityEffect *eff = new QGraphicsOpacityEffect(this);
+    setGraphicsEffect(eff);
+    QPropertyAnimation *a = new QPropertyAnimation(eff,"opacity");
+    a->setDuration(350);
+    a->setStartValue(1);
+    a->setEndValue(0);
+    a->setEasingCurve(QEasingCurve::OutBack);
+    a->start(QPropertyAnimation::DeleteWhenStopped);
+}
 void eventTask::addTask(QListWidget* Window){
+
     QString Date = ui->calendarWidget->selectedDate().toString(Qt::RFC2822Date);
+    QString Event = ui->lineEdit->text();
+    QListWidgetItem* NewEvent;
+
+    QSqlDatabase mydb = MainWindow::getDB();
+    QSqlQuery query;
+    query.prepare("INSERT INTO CurrentEvent(EventName, EventDate, IsDone) values(:EventName,:EventDate,:IsDone)");
+
     if(ui->calendarWidget->isHidden()){
-        Window->addItem(ui->lineEdit->text());
+        NewEvent = new QListWidgetItem(ui->lineEdit->text(), Window);
+        Date.clear();
     } else {
-        Window->addItem(ui->lineEdit->text() + " | " + Date);
+        NewEvent = new QListWidgetItem(ui->lineEdit->text() + " | " + Date, Window);
     }
+
+    query.prepare("INSERT INTO CurrentEvent(EventName, EventDate, IsDone) values(:EventName,:EventDate,:IsDone)");
+    query.bindValue(":EventName",Event);
+    query.bindValue(":EventDate",Date);
+    query.bindValue(":IsDone",1);
+
+    NewEvent->setFlags(NewEvent->flags() | Qt::ItemIsUserCheckable);
+    NewEvent->setCheckState(Qt::Unchecked);
+
     this->hide();
+    fadeOut();
 }

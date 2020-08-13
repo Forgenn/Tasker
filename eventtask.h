@@ -2,6 +2,7 @@
 #define EVENTTASK_H
 
 #include <QDialog>
+#include <QGraphicsOpacityEffect>
 #include "mainwindow.h"
 
 namespace Ui {
@@ -23,6 +24,8 @@ private slots:
 
 private:
     Ui::eventTask *ui;
+    void fadeIn();
+    void fadeOut();
 };
 
 #endif // EVENTTASK_H

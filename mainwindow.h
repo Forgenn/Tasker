@@ -1,6 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
+#include <QtSql>
+#include <QtDebug>
 #include <QMainWindow>
 #include "ui_mainwindow.h"
 
@@ -16,6 +17,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     static QListWidget * getListWidgetPtr();
     ~MainWindow();
+    static QSqlDatabase getDB(){return mydb;};
 
 private slots:
     void on_pushButton_clicked();
@@ -25,5 +27,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     static QListWidget * pListWidget;
+    static QSqlDatabase mydb;
+    void loadDatabase();
 };
 #endif // MAINWINDOW_H
