@@ -17,19 +17,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     Section.cpp \
-    dockevent.cpp \
     eventtask.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     Section.h \
-    dockevent.h \
     eventtask.h \
     mainwindow.h
 
 FORMS += \
-    dockevent.ui \
     eventtask.ui \
     mainwindow.ui
 

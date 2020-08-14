@@ -24,6 +24,8 @@ private slots:
 
     void on_listWidget_itemClicked(QListWidgetItem *item);
 
+    void ReturnPressed(int a);
+
 private:
     Ui::MainWindow *ui;
     static QListWidget * pListWidget;

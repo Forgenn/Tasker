@@ -22,7 +22,7 @@
   <widget class="QLineEdit" name="lineEdit">
    <property name="geometry">
     <rect>
-     <x>0</x>
+     <x>20</x>
      <y>30</y>
      <width>291</width>
      <height>21</height>
@@ -39,6 +39,9 @@
      <width>315</width>
      <height>500</height>
     </size>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::NoContextMenu</enum>
    </property>
    <property name="styleSheet">
     <string notr="true">color: white;</string>

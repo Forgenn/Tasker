@@ -2,12 +2,13 @@
 #include "ui_eventtask.h"
 
 eventTask::eventTask(QWidget *parent) :
-    QDialog(parent),
+    QWidget(parent),
     ui(new Ui::eventTask)
 {
     ui->setupUi(this);
     ui->calendarWidget->hide();
-
+    ui->lineEdit->setFocusPolicy(Qt::StrongFocus);
+    ui->lineEdit->setFocus();
     if(!this->isHidden())
         this->show();
     fadeIn();
@@ -23,7 +24,9 @@ void eventTask::on_lineEdit_returnPressed()
 {
     QListWidget* Window = MainWindow::getListWidgetPtr();
     addTask(Window);
+    emit lineEditReturnPressed(0);
 }
+
 
 void eventTask::on_toolButton_clicked()
 {
@@ -57,6 +60,8 @@ void eventTask::fadeOut(){
     a->setEasingCurve(QEasingCurve::OutBack);
     a->start(QPropertyAnimation::DeleteWhenStopped);
 }
+
+
 void eventTask::addTask(QListWidget* Window){
 
     QString Date = ui->calendarWidget->selectedDate().toString(Qt::RFC2822Date);
@@ -65,6 +70,7 @@ void eventTask::addTask(QListWidget* Window){
 
     QSqlDatabase mydb = MainWindow::getDB();
     QSqlQuery query;
+    query.setForwardOnly(true);
     query.prepare("INSERT INTO CurrentEvent(EventName, EventDate, IsDone) values(:EventName,:EventDate,:IsDone)");
 
     if(ui->calendarWidget->isHidden()){
@@ -78,10 +84,14 @@ void eventTask::addTask(QListWidget* Window){
     query.bindValue(":EventName",Event);
     query.bindValue(":EventDate",Date);
     query.bindValue(":IsDone",1);
+    query.exec();
 
     NewEvent->setFlags(NewEvent->flags() | Qt::ItemIsUserCheckable);
     NewEvent->setCheckState(Qt::Unchecked);
 
-    this->hide();
-    fadeOut();
+}
+
+void eventTask::recalculateHeight(QListWidget* Window, QListWidgetItem* NewEvent){
+
+
 }

@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "eventtask.h"
-#include "dockevent.h"
 #include "Section.h"
 
 #include <QBoxLayout>
@@ -37,6 +36,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     section->setContentLayout(*anyLayout);
 
+    eventTask * eventTaskWindow = new eventTask();
+    connect(eventTaskWindow, &eventTask::lineEditReturnPressed, this, &MainWindow::ReturnPressed);
+
 }
 
 
@@ -49,6 +51,8 @@ QListWidget * MainWindow::getListWidgetPtr()
 {
     return pListWidget;
 }
+
+
 
 void MainWindow::loadDatabase(){
 
@@ -78,28 +82,20 @@ void MainWindow::loadDatabase(){
         }
 }
 
+void MainWindow::ReturnPressed(int a){
+ ui->gridStackedWidget->setCurrentIndex(a);
+}
 
 void MainWindow::on_pushButton_clicked()
-{   //Add checkmark item to list
-    //QListWidgetItem* item = new QListWidgetItem("item", ui->listWidget);
-    //item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
-   // item->setCheckState(Qt::Unchecked);
-    ui->listWidget->hide();
-    ui->pushButton->hide();
+{
+    eventTask * eventTaskWindow = new eventTask();
+    connect(eventTaskWindow, &eventTask::lineEditReturnPressed, this, &MainWindow::ReturnPressed);
 
-    DockEvent * DockMain = new DockEvent();
-    eventTask eventTaskWindow;
+    int a = ui->gridStackedWidget->addWidget(eventTaskWindow);
+    ui->gridStackedWidget->setCurrentIndex(a);
 
-    this->addDockWidget(Qt::RightDockWidgetArea, DockMain);
-    DockMain->setWidget(&eventTaskWindow);
-
-    eventTaskWindow.setMinimumSize(QSize(320,200));
-    eventTaskWindow.baseSize();
-    eventTaskWindow.exec();
-    DockMain->hide();
-    ui->listWidget->show();
-    ui->pushButton->show();
 }
+
 
 void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
 {
