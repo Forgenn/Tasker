@@ -26,18 +26,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     loadDatabase();
 
+    //Create a spoiler like widget containing a list
     Section* section = new Section("Completed", 500, ui->widget);
     ui->spoilerLayout->addWidget(section);
 
     auto* anyLayout = new QVBoxLayout();
-    QListWidget * OldEvents = new QListWidget();
+    OldEvents = new QListWidget();
     OldEvents->setStyleSheet("border : none");
     anyLayout->addWidget(OldEvents);
-
     section->setContentLayout(*anyLayout);
-
-    eventTask * eventTaskWindow = new eventTask();
-    connect(eventTaskWindow, &eventTask::lineEditReturnPressed, this, &MainWindow::ReturnPressed);
 
 }
 
@@ -72,7 +69,6 @@ void MainWindow::loadDatabase(){
     qDebug() << query.lastError();
 
         while (query.next()) {
-            qDebug() << query.value(1).toString();
             if (query.value(2).toInt() == 1){
                 QListWidgetItem* NewEvent = new QListWidgetItem(query.value(0).toString() + " " + query.value(1).toString() , ui->listWidget);
                 qDebug() << query.value(2).toBool();
@@ -85,6 +81,7 @@ void MainWindow::loadDatabase(){
 void MainWindow::ReturnPressed(int a){
  ui->gridStackedWidget->setCurrentIndex(a);
 }
+
 
 void MainWindow::on_pushButton_clicked()
 {
@@ -99,5 +96,6 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
 {
+    OldEvents->addItem(item->text());
     item->~QListWidgetItem();
 }

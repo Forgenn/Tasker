@@ -19,6 +19,9 @@ public:
     ~MainWindow();
     static QSqlDatabase getDB(){return mydb;};
 
+signals:
+    void oldEventsAdd(QListWidgetItem *item);
+
 private slots:
     void on_pushButton_clicked();
 
@@ -26,10 +29,13 @@ private slots:
 
     void ReturnPressed(int a);
 
+
 private:
     Ui::MainWindow *ui;
     static QListWidget * pListWidget;
     static QSqlDatabase mydb;
     void loadDatabase();
+    //List for inactive events
+    QListWidget * OldEvents;
 };
 #endif // MAINWINDOW_H
