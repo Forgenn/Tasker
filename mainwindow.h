@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 #include <QtSql>
 #include <QtDebug>
+#include <QListWidget>
 #include <QMainWindow>
 #include "ui_mainwindow.h"
 
@@ -15,24 +16,24 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
-    static QListWidget * getListWidgetPtr();
+    static QTreeWidget * getListWidgetPtr();
     ~MainWindow();
     static QSqlDatabase getDB(){return mydb;};
 
+
 signals:
-    void oldEventsAdd(QListWidgetItem *item);
+    void oldEventsAdd(QTreeWidgetItem *item);
 
 private slots:
     void on_pushButton_clicked();
 
-    void on_listWidget_itemClicked(QListWidgetItem *item);
-
     void ReturnPressed(int a);
 
+    void on_treeWidget_itemClicked(QTreeWidgetItem *item, int column);
 
 private:
     Ui::MainWindow *ui;
-    static QListWidget * pListWidget;
+    static QTreeWidget * pListWidget;
     static QSqlDatabase mydb;
     void loadDatabase();
     //List for inactive events

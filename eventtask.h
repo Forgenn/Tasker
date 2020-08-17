@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QGraphicsOpacityEffect>
+#include <QListWidget>
 #include "mainwindow.h"
 
 namespace Ui {
@@ -21,13 +22,17 @@ signals:
 private slots:
     void on_lineEdit_returnPressed();    
     void on_toolButton_clicked();
-    void addTask(QListWidget* Window);
+    void addTask(QTreeWidget* Window);
+
+    void on_pushButton_clicked();
 
 private:
     Ui::eventTask *ui;
     void fadeIn();
     void fadeOut();
-    void recalculateHeight(QListWidget* Window, QListWidgetItem* NewEvent);
+    void recalculateHeight(QTreeWidget* Window, QTreeWidgetItem* NewEvent);
 };
+
+void newItemWidget(QVariant Event, QVariant Date, QTreeWidget* Window);
 
 #endif // EVENTTASK_H

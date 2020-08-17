@@ -22,7 +22,7 @@ eventTask::~eventTask()
 
 void eventTask::on_lineEdit_returnPressed()
 {
-    QListWidget* Window = MainWindow::getListWidgetPtr();
+    QTreeWidget* Window = MainWindow::getListWidgetPtr();
     addTask(Window);
     emit lineEditReturnPressed(0);
 }
@@ -61,24 +61,39 @@ void eventTask::fadeOut(){
     a->start(QPropertyAnimation::DeleteWhenStopped);
 }
 
+void newItemWidget(QVariant Event, QVariant Date, QTreeWidget* Window){
+    QTreeWidgetItem* NewEvent = new QTreeWidgetItem(Window);
+    Window->layout()->setContentsMargins(0,0,0,0);
+    NewEvent->setTextAlignment(0, Qt::AlignRight);
+    NewEvent->setData(0, 0, Event);
+    NewEvent->setData(0, 1, Date);
 
-void eventTask::addTask(QListWidget* Window){
+    NewEvent->setText(0, NewEvent->data(0,0).toString().simplified());
+    NewEvent->setText(1, NewEvent->data(0,1).toDate().toString());
+    NewEvent->setTextAlignment(0, Qt::AlignLeft);
+    NewEvent->setFlags(NewEvent->flags() | Qt::ItemIsUserCheckable);
+    NewEvent->setCheckState(0, Qt::Unchecked);
+    qDebug() << NewEvent->data(0,0);
+    Window->addTopLevelItem(NewEvent);
 
-    QString Date = ui->calendarWidget->selectedDate().toString(Qt::RFC2822Date);
-    QString Event = ui->lineEdit->text();
-    QListWidgetItem* NewEvent;
+}
+
+
+void eventTask::addTask(QTreeWidget* Window){
+
+    QVariant Date = ui->calendarWidget->selectedDate();
+    QVariant Event = ui->lineEdit->text();
+    QTreeWidgetItem* NewEvent;
 
     QSqlDatabase mydb = MainWindow::getDB();
     QSqlQuery query;
     query.setForwardOnly(true);
     query.prepare("INSERT INTO CurrentEvent(EventName, EventDate, IsDone) values(:EventName,:EventDate,:IsDone)");
 
-    if(ui->calendarWidget->isHidden()){
-        NewEvent = new QListWidgetItem(ui->lineEdit->text(), Window);
-        Date.clear();
-    } else {
-        NewEvent = new QListWidgetItem(ui->lineEdit->text() + " | " + Date, Window);
-    }
+    if(ui->calendarWidget->isHidden())
+        Date.setValue(nullptr);
+
+    newItemWidget(Event, Date, Window);
 
     query.prepare("INSERT INTO CurrentEvent(EventName, EventDate, IsDone) values(:EventName,:EventDate,:IsDone)");
     query.bindValue(":EventName",Event);
@@ -86,12 +101,20 @@ void eventTask::addTask(QListWidget* Window){
     query.bindValue(":IsDone",1);
     query.exec();
 
-    NewEvent->setFlags(NewEvent->flags() | Qt::ItemIsUserCheckable);
-    NewEvent->setCheckState(Qt::Unchecked);
+    ui->lineEdit->clear();
+    Date.setValue(nullptr);
+}
+
+
+//TODO
+void eventTask::recalculateHeight(QTreeWidget* Window, QTreeWidgetItem* NewEvent){
+
 
 }
 
-void eventTask::recalculateHeight(QListWidget* Window, QListWidgetItem* NewEvent){
-
-
+void eventTask::on_pushButton_clicked()
+{
+    QTreeWidget* Window = MainWindow::getListWidgetPtr();
+    addTask(Window);
+    emit lineEditReturnPressed(0);
 }

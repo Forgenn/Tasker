@@ -8,7 +8,7 @@
 #include <QPushButton>
 
 //Pointer to Main list widget, so eventtask can write to it
-QListWidget * MainWindow::pListWidget = nullptr;
+QTreeWidget * MainWindow::pListWidget = nullptr;
 
 //Database initializacion for the static getter
 const QString DRIVER("QSQLITE");
@@ -20,10 +20,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
 
     ui->setupUi(this);
-    pListWidget = ui->listWidget;
-    ui->listWidget->setStyleSheet("color:white;");
+    pListWidget = ui->treeWidget;
+    ui->treeWidget->setStyleSheet("color:white;");
     ui->pushButton->setStyleSheet("color:white;");
-
+    ui->gridStackedWidget->setContentsMargins(0,0,0,0);
     loadDatabase();
 
     //Create a spoiler like widget containing a list
@@ -36,6 +36,8 @@ MainWindow::MainWindow(QWidget *parent)
     anyLayout->addWidget(OldEvents);
     section->setContentLayout(*anyLayout);
 
+    ui->treeWidget->setColumnCount(2);
+
 }
 
 
@@ -44,7 +46,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-QListWidget * MainWindow::getListWidgetPtr()
+QTreeWidget * MainWindow::getListWidgetPtr()
 {
     return pListWidget;
 }
@@ -67,16 +69,15 @@ void MainWindow::loadDatabase(){
     query.exec();
 
     qDebug() << query.lastError();
-
+        //Dont want to do it like this, root will be date and children will be events in that day.
         while (query.next()) {
             if (query.value(2).toInt() == 1){
-                QListWidgetItem* NewEvent = new QListWidgetItem(query.value(0).toString() + " " + query.value(1).toString() , ui->listWidget);
-                qDebug() << query.value(2).toBool();
-                NewEvent->setFlags(NewEvent->flags() | Qt::ItemIsUserCheckable);
-                NewEvent->setCheckState(Qt::Unchecked);
+                newItemWidget(query.value(0), query.value(1), ui->treeWidget);
+
             }
         }
 }
+
 
 void MainWindow::ReturnPressed(int a){
  ui->gridStackedWidget->setCurrentIndex(a);
@@ -93,9 +94,8 @@ void MainWindow::on_pushButton_clicked()
 
 }
 
-
-void MainWindow::on_listWidget_itemClicked(QListWidgetItem *item)
+void MainWindow::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
 {
-    OldEvents->addItem(item->text());
-    item->~QListWidgetItem();
+    OldEvents->addItem(item->text(0));
+    item->~QTreeWidgetItem();
 }
