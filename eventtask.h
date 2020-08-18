@@ -17,8 +17,10 @@ class eventTask : public QWidget
 public:
     explicit eventTask(QWidget *parent = nullptr);
     ~eventTask();
+
 signals:
     void lineEditReturnPressed(int a);
+
 private slots:
     void on_lineEdit_returnPressed();    
     void on_toolButton_clicked();
@@ -33,6 +35,8 @@ private:
     void recalculateHeight(QTreeWidget* Window, QTreeWidgetItem* NewEvent);
 };
 
-void newItemWidget(QVariant Event, QVariant Date, QTreeWidget* Window);
+void newItemWidgetTree(QVariant Event, QVariant Date, QTreeWidget* Window);
+void addRoot(QVariant Event, QVariant Date, QTreeWidget* Window);
+void addChild(QTreeWidgetItem * parent, QVariant Event, QVariant Date);
 
 #endif // EVENTTASK_H

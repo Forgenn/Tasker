@@ -38,5 +38,6 @@ private:
     void loadDatabase();
     //List for inactive events
     QListWidget * OldEvents;
+    void newItemWidgetList(QVariant Event, QVariant Date, QListWidget * Window);
 };
 #endif // MAINWINDOW_H

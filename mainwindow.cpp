@@ -24,9 +24,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->treeWidget->setStyleSheet("color:white;");
     ui->pushButton->setStyleSheet("color:white;");
     ui->gridStackedWidget->setContentsMargins(0,0,0,0);
-    loadDatabase();
 
-    //Create a spoiler like widget containing a list
+    //Create a spoiler-like widget containing a list
     Section* section = new Section("Completed", 500, ui->widget);
     ui->spoilerLayout->addWidget(section);
 
@@ -36,7 +35,8 @@ MainWindow::MainWindow(QWidget *parent)
     anyLayout->addWidget(OldEvents);
     section->setContentLayout(*anyLayout);
 
-    ui->treeWidget->setColumnCount(2);
+    loadDatabase();
+    ui->treeWidget->setColumnCount(1);
 
 }
 
@@ -63,8 +63,6 @@ void MainWindow::loadDatabase(){
     }
 
     QSqlQuery InitialQuery("CREATE TABLE IF NOT EXISTS CurrentEvent (EventId INTEGER NOT NULL UNIQUE AUTOINCREASE, EventName TEXT NOT NULL, EventDate TEXT, IsDone INTEGER NOT NULL DEFAULT 1);");
-
-    QVariant ref_id = 0;
     QSqlQuery query("SELECT [EventName], [EventDate], [isDone] FROM CurrentEvent", mydb);
     query.exec();
 
@@ -72,10 +70,18 @@ void MainWindow::loadDatabase(){
         //Dont want to do it like this, root will be date and children will be events in that day.
         while (query.next()) {
             if (query.value(2).toInt() == 1){
-                newItemWidget(query.value(0), query.value(1), ui->treeWidget);
+                newItemWidgetTree(query.value(0), query.value(1), ui->treeWidget);
+            } else {
+                newItemWidgetList(query.value(0), query.value(1), OldEvents);
 
             }
         }
+}
+
+void MainWindow::newItemWidgetList(QVariant Event, QVariant Date, QListWidget * Window){
+    QListWidgetItem* OldEventItem = new QListWidgetItem(Window);
+    OldEventItem->setText(Event.toString() + "   " + Date.toDate().toString("dddd d MMMM"));
+    OldEventItem->setData(Qt::UserRole, Date);
 }
 
 
@@ -97,5 +103,16 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
 {
     OldEvents->addItem(item->text(0));
+
+    QSqlQuery query(mydb);
+    query.setForwardOnly(true);
+
+    query.prepare("UPDATE CurrentEvent SET isDone=0 WHERE Eventname=:EventName AND EventDate=:EventDate OR EventDate IS NULL");
+    query.bindValue(":EventName",item->text(0));
+    query.bindValue(":EventDate", item->parent()->text(0));
+     qDebug() << item->text(0) << item->parent()->text(0);
+    query.exec();
+        qDebug() << query.lastError();
+
     item->~QTreeWidgetItem();
 }
