@@ -102,17 +102,19 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
 {
-    OldEvents->addItem(item->text(0));
+    if (item->parent()){
+        OldEvents->addItem(item->text(0));
+        QSqlQuery query(mydb);
+        query.setForwardOnly(true);
 
-    QSqlQuery query(mydb);
-    query.setForwardOnly(true);
+        query.prepare("UPDATE CurrentEvent SET isDone=:Done WHERE Eventname=:EventName AND EventDate=:EventDate OR EventDate IS NULL");
+        query.bindValue(":EventName",item->text(0));
+        query.bindValue(":Done",0);
+        query.bindValue(":EventDate", item->parent()->data(0, Qt::UserRole));
+         qDebug() << item->text(0) << item->parent()->data(0, Qt::UserRole);
+        query.exec();
+            qDebug() << query.lastError();
 
-    query.prepare("UPDATE CurrentEvent SET isDone=0 WHERE Eventname=:EventName AND EventDate=:EventDate OR EventDate IS NULL");
-    query.bindValue(":EventName",item->text(0));
-    query.bindValue(":EventDate", item->parent()->text(0));
-     qDebug() << item->text(0) << item->parent()->text(0);
-    query.exec();
-        qDebug() << query.lastError();
-
-    item->~QTreeWidgetItem();
+        item->~QTreeWidgetItem();
+       }
 }

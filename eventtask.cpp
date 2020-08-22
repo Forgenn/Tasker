@@ -66,8 +66,15 @@ void addRoot(QVariant Event, QVariant Date, QTreeWidget* Window){
      QTreeWidgetItem* NewEvent = new QTreeWidgetItem(Window);
      //NewEvent->setChildIndicatorPolicy(QTreeWidgetItem::DontShowIndicator);
      NewEvent->setExpanded(true);
+     NewEvent->setFlags(NewEvent->flags() & ~Qt::ItemIsSelectable);
 
-     NewEvent->setText(0, Date.toDate().toString("dddd d MMMM"));
+     if (Date.toString() == "No Date"){
+        NewEvent->setText(0, Date.toString());
+     } else {
+        NewEvent->setText(0, Date.toDate().toString("dddd d MMMM"));
+     }
+
+     NewEvent->setData(0, Qt::UserRole, Date);
      Window->addTopLevelItem(NewEvent);
 
      addChild(NewEvent, Event, Date);
@@ -87,11 +94,16 @@ void addChild(QTreeWidgetItem * parent, QVariant Event, QVariant Date){
 void newItemWidgetTree(QVariant Event, QVariant Date, QTreeWidget* Window){
 
     auto isDateFound = Window->findItems(Date.toDate().toString("dddd d MMMM") , Qt::MatchExactly, 0);
+    auto isNoDateFound = Window->findItems("No Date", Qt::MatchExactly, 0);
 
-    if (isDateFound.isEmpty()){
+    if ((isDateFound.isEmpty()) && (isNoDateFound.isEmpty())){
         addRoot(Event, Date, Window);
     } else {
-        addChild(isDateFound.first(), Event, Date);
+        if (!isNoDateFound.isEmpty())
+            addChild(isNoDateFound.first(), Event, Date);
+        else
+            addChild(isDateFound.first(), Event, Date);
+
     }
 
 /**
@@ -113,13 +125,16 @@ void eventTask::addTask(QTreeWidget* Window){
     QVariant Date = ui->calendarWidget->selectedDate();
     QVariant Event = ui->lineEdit->text();
 
+
     QSqlDatabase mydb = MainWindow::getDB();
     QSqlQuery query;
     query.setForwardOnly(true);
-    query.prepare("INSERT INTO CurrentEvent(EventName, EventDate, IsDone) values(:EventName,:EventDate,:IsDone)");
 
-    if(ui->calendarWidget->isHidden())
-        Date.setValue(nullptr);
+    qDebug() << Date;
+    if(ui->calendarWidget->isHidden()){
+        const QString avui = QString("No Date");
+         Date.setValue(avui);
+        }
 
     newItemWidgetTree(Event, Date, Window);
 
