@@ -93,30 +93,28 @@ void addChild(QTreeWidgetItem * parent, QVariant Event, QVariant Date){
 
 void newItemWidgetTree(QVariant Event, QVariant Date, QTreeWidget* Window){
 
-    auto isDateFound = Window->findItems(Date.toDate().toString("dddd d MMMM") , Qt::MatchExactly, 0);
-    auto isNoDateFound = Window->findItems("No Date", Qt::MatchExactly, 0);
 
-    if ((isDateFound.isEmpty()) && (isNoDateFound.isEmpty())){
-        addRoot(Event, Date, Window);
-    } else {
-        if (!isNoDateFound.isEmpty())
-            addChild(isNoDateFound.first(), Event, Date);
-        else
+    if (Date.toString() != "No Date"){
+
+        auto isDateFound = Window->findItems(Date.toDate().toString("dddd d MMMM") , Qt::MatchExactly, 0);
+
+        if (isDateFound.isEmpty()){
+            addRoot(Event, Date, Window);
+        } else {
             addChild(isDateFound.first(), Event, Date);
+        }
 
+    } else {
+
+        auto isNoDateFound = Window->findItems("No Date", Qt::MatchExactly, 0);
+
+        if (isNoDateFound.isEmpty()){
+            addRoot(Event, Date, Window);
+        } else {
+            addChild(isNoDateFound.first(), Event, Date);
+        }
     }
 
-/**
-    NewEvent->setData(0, 0, Event);
-    NewEvent->setData(0, 1, Date);
-
-    NewEvent->setText(0, NewEvent->data(0,0).toString().simplified());
-    NewEvent->setText(1, NewEvent->data(0,1).toDate().toString());
-    NewEvent->setTextAlignment(0, Qt::AlignLeft);
-    NewEvent->setFlags(NewEvent->flags() | Qt::ItemIsUserCheckable);
-    NewEvent->setCheckState(0, Qt::Unchecked);
-    Window->addTopLevelItem(NewEvent);
-*/
 }
 
 

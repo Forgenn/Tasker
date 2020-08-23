@@ -35,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent)
     anyLayout->addWidget(OldEvents);
     section->setContentLayout(*anyLayout);
 
+    connect(OldEvents, &QListWidget::itemClicked, this , &MainWindow::listWidget_itemClicked);
     loadDatabase();
     ui->treeWidget->setColumnCount(1);
 
@@ -80,7 +81,7 @@ void MainWindow::loadDatabase(){
 
 void MainWindow::newItemWidgetList(QVariant Event, QVariant Date, QListWidget * Window){
     QListWidgetItem* OldEventItem = new QListWidgetItem(Window);
-    OldEventItem->setText(Event.toString() + "   " + Date.toDate().toString("dddd d MMMM"));
+    OldEventItem->setText(Event.toString());
     OldEventItem->setData(Qt::UserRole, Date);
 }
 
@@ -107,7 +108,7 @@ void MainWindow::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
         QSqlQuery query(mydb);
         query.setForwardOnly(true);
 
-        query.prepare("UPDATE CurrentEvent SET isDone=:Done WHERE Eventname=:EventName AND EventDate=:EventDate OR EventDate IS NULL");
+        query.prepare("UPDATE CurrentEvent SET isDone=:Done WHERE Eventname=:EventName AND EventDate=:EventDate");
         query.bindValue(":EventName",item->text(0));
         query.bindValue(":Done",0);
         query.bindValue(":EventDate", item->parent()->data(0, Qt::UserRole));
@@ -116,5 +117,22 @@ void MainWindow::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
             qDebug() << query.lastError();
 
         item->~QTreeWidgetItem();
-       }
+
+    }
+}
+
+void MainWindow::listWidget_itemClicked(QListWidgetItem *item){
+    //qDebug <<
+    QSqlQuery query(mydb);
+    query.setForwardOnly(true);
+
+    query.prepare("UPDATE CurrentEvent SET isDone=:Done WHERE Eventname=:EventName AND EventDate=:EventDate");
+    query.bindValue(":EventName",item->text());
+    query.bindValue(":Done",1);
+    query.bindValue(":EventDate", item->data(Qt::UserRole));
+
+    QVariant Event(item->text());
+    QVariant Date(item->data(Qt::UserRole));
+    newItemWidgetTree(Event, Date, pListWidget);
+    item->~QListWidgetItem();
 }

@@ -24,12 +24,15 @@ public:
 signals:
     void oldEventsAdd(QTreeWidgetItem *item);
 
+
 private slots:
     void on_pushButton_clicked();
 
     void ReturnPressed(int a);
 
     void on_treeWidget_itemClicked(QTreeWidgetItem *item, int column);
+
+    void listWidget_itemClicked(QListWidgetItem *item);
 
 private:
     Ui::MainWindow *ui;
