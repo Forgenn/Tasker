@@ -83,6 +83,7 @@ void MainWindow::newItemWidgetList(QVariant Event, QVariant Date, QListWidget * 
     QListWidgetItem* OldEventItem = new QListWidgetItem(Window);
     OldEventItem->setText(Event.toString());
     OldEventItem->setData(Qt::UserRole, Date);
+    qDebug() << "newitemwidgetlist" << Date;
 }
 
 
@@ -104,17 +105,19 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
 {
     if (item->parent()){
-        OldEvents->addItem(item->text(0));
+        qDebug() << "ontreewidgetclicked"<< item->text(0) << item->parent()->data(0, Qt::UserRole);
+        newItemWidgetList(item->text(0), item->parent()->data(0, Qt::UserRole), OldEvents);
+        //OldEvents->addItem(item->text(0));
         QSqlQuery query(mydb);
         query.setForwardOnly(true);
 
         query.prepare("UPDATE CurrentEvent SET isDone=:Done WHERE Eventname=:EventName AND EventDate=:EventDate");
         query.bindValue(":EventName",item->text(0));
         query.bindValue(":Done",0);
-        query.bindValue(":EventDate", item->parent()->data(0, Qt::UserRole));
-         qDebug() << item->text(0) << item->parent()->data(0, Qt::UserRole);
+        query.bindValue(":EventDate", item->parent()->data(0, Qt::UserRole).toString());
+
         query.exec();
-            qDebug() << query.lastError();
+         qDebug() << query.lastError();
 
         item->~QTreeWidgetItem();
 
@@ -129,10 +132,12 @@ void MainWindow::listWidget_itemClicked(QListWidgetItem *item){
     query.prepare("UPDATE CurrentEvent SET isDone=:Done WHERE Eventname=:EventName AND EventDate=:EventDate");
     query.bindValue(":EventName",item->text());
     query.bindValue(":Done",1);
-    query.bindValue(":EventDate", item->data(Qt::UserRole));
+    query.bindValue(":EventDate", item->data(Qt::UserRole).toString());
+    query.exec();
 
     QVariant Event(item->text());
     QVariant Date(item->data(Qt::UserRole));
+    qDebug() << "listwidgetitemclicked" << item->data(Qt::UserRole) << item->text();
     newItemWidgetTree(Event, Date, pListWidget);
     item->~QListWidgetItem();
 }

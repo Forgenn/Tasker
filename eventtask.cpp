@@ -92,7 +92,7 @@ void addChild(QTreeWidgetItem * parent, QVariant Event, QVariant Date){
 }
 
 void newItemWidgetTree(QVariant Event, QVariant Date, QTreeWidget* Window){
-
+    qDebug() << "newItemWidgettree" << Date;
 
     if (Date.toString() != "No Date"){
 
