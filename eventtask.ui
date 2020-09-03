@@ -19,6 +19,10 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">color: rgb(163, 154, 88);
+background-color: rgb(38, 4, 46);</string>
+  </property>
   <widget class="QLineEdit" name="lineEdit">
    <property name="geometry">
     <rect>
@@ -44,7 +48,7 @@
     <enum>Qt::NoContextMenu</enum>
    </property>
    <property name="styleSheet">
-    <string notr="true">color: white;</string>
+    <string notr="true">color: rgb(163, 154, 88);</string>
    </property>
    <property name="inputMask">
     <string/>
@@ -72,6 +76,18 @@
     <string notr="true">alternate-background-color: rgb(128, 128, 128);
   </string>
    </property>
+   <property name="gridVisible">
+    <bool>false</bool>
+   </property>
+   <property name="verticalHeaderFormat">
+    <enum>QCalendarWidget::NoVerticalHeader</enum>
+   </property>
+   <property name="navigationBarVisible">
+    <bool>true</bool>
+   </property>
+   <property name="dateEditEnabled">
+    <bool>true</bool>
+   </property>
   </widget>
   <widget class="QToolButton" name="toolButton">
    <property name="geometry">
@@ -81,6 +97,9 @@
      <width>26</width>
      <height>20</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(163, 154, 88);</string>
    </property>
    <property name="text">
     <string>Calendar</string>
@@ -95,14 +114,14 @@
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
-     <x>330</x>
+     <x>300</x>
      <y>30</y>
-     <width>21</width>
+     <width>31</width>
      <height>21</height>
     </rect>
    </property>
    <property name="text">
-    <string>OK</string>
+    <string>Add</string>
    </property>
   </widget>
  </widget>

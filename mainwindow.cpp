@@ -21,12 +21,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->setupUi(this);
     pListWidget = ui->treeWidget;
-    ui->treeWidget->setStyleSheet("color:white;");
-    ui->pushButton->setStyleSheet("color:white;");
+
     ui->gridStackedWidget->setContentsMargins(0,0,0,0);
 
     //Create a spoiler-like widget containing a list
     Section* section = new Section("Completed", 500, ui->widget);
+    section->setStyleSheet("color: rgb(163, 154, 88)");
     ui->spoilerLayout->addWidget(section);
 
     auto* anyLayout = new QVBoxLayout();
@@ -56,18 +56,28 @@ QTreeWidget * MainWindow::getListWidgetPtr()
 
 void MainWindow::loadDatabase(){
 
-    mydb.setDatabaseName("events.db");
+    QDir dir("C:/Tasker/");
+
+    if (!dir.exists())
+        dir.mkdir("C:/Tasker/");
+
+    mydb.setConnectOptions("QSQLITE_OPEN_URI");
+    mydb.setDatabaseName("C:/Tasker/events.db");
+
 
     if(!mydb.open()){
         qDebug()<<"Failed to open database";
         return;
     }
 
-    QSqlQuery InitialQuery("CREATE TABLE IF NOT EXISTS CurrentEvent (EventId INTEGER NOT NULL UNIQUE AUTOINCREASE, EventName TEXT NOT NULL, EventDate TEXT, IsDone INTEGER NOT NULL DEFAULT 1);");
+    QSqlQuery InitialQuery("CREATE TABLE IF NOT EXISTS CurrentEvent (EventId INTEGER NOT NULL UNIQUE PRIMARY KEY AUTOINCREMENT, EventName TEXT NOT NULL, EventDate TEXT, IsDone INTEGER NOT NULL DEFAULT 1);", mydb);
+    InitialQuery.exec();
+    qDebug() << InitialQuery.lastError() << "Inital" ;
+
     QSqlQuery query("SELECT [EventName], [EventDate], [isDone] FROM CurrentEvent", mydb);
     query.exec();
 
-    qDebug() << query.lastError();
+    qDebug() << query.lastError() << "QUEERY";
         //Dont want to do it like this, root will be date and children will be events in that day.
         while (query.next()) {
             if (query.value(2).toInt() == 1){
@@ -88,7 +98,8 @@ void MainWindow::newItemWidgetList(QVariant Event, QVariant Date, QListWidget * 
 
 
 void MainWindow::ReturnPressed(int a){
- ui->gridStackedWidget->setCurrentIndex(a);
+    ui->gridStackedWidget->setCurrentIndex(a);
+    ui->pushButton->show();
 }
 
 
@@ -99,6 +110,7 @@ void MainWindow::on_pushButton_clicked()
 
     int a = ui->gridStackedWidget->addWidget(eventTaskWindow);
     ui->gridStackedWidget->setCurrentIndex(a);
+    ui->pushButton->hide();
 
 }
 

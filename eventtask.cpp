@@ -1,5 +1,6 @@
 #include "eventtask.h"
 #include "ui_eventtask.h"
+#include "QCheckBox"
 
 eventTask::eventTask(QWidget *parent) :
     QWidget(parent),
@@ -80,13 +81,12 @@ void addRoot(QVariant Event, QVariant Date, QTreeWidget* Window){
      addChild(NewEvent, Event, Date);
 
 }
+
 void addChild(QTreeWidgetItem * parent, QVariant Event, QVariant Date){
 
     QTreeWidgetItem* NewEvent = new QTreeWidgetItem();
     NewEvent->setText(0, Event.toString());
 
-    NewEvent->setFlags(NewEvent->flags() | Qt::ItemIsUserCheckable);
-    NewEvent->setCheckState(0, Qt::Unchecked);
 
     parent->addChild(NewEvent);
 }
