@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
 
     ui->setupUi(this);
+
     pListWidget = ui->treeWidget;
 
     ui->gridStackedWidget->setContentsMargins(0,0,0,0);

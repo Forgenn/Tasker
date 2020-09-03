@@ -23,7 +23,13 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Tasker</string>
+  </property>
+  <property name="windowIcon">
+   <iconset theme="0"/>
+  </property>
+  <property name="windowOpacity">
+   <double>1.000000000000000</double>
   </property>
   <property name="styleSheet">
    <string notr="true">background-color: rgb(38, 4, 46);</string>
